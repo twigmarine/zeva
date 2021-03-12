@@ -10,13 +10,15 @@
     "test": "jest --watch"
   },
   "jest": {
-    "modulePathIgnorePatterns": ["lib"]
+    "modulePathIgnorePatterns": [
+      "lib"
+    ]
   },
   "dependencies": {
-    "lodash": "^4.17.20",
-    "nori-can": "^2.10.1",
-    "prairie": "^3.12.1",
-    "understory": "^1.13.0"
+    "lodash": "^4.17.21",
+    "nori-can": "^2.13.1",
+    "prairie": "^3.12.2",
+    "understory": "^1.13.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
