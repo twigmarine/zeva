@@ -1,39 +1,33 @@
-import { encodePgn } from 'nori-can'
+import _ from 'lodash/fp'
+import { encodePgn, parseString } from 'nori-can'
 import {
-  encodeZeva, encodeZevaCanId, getCanId, parse,
+  encodeZeva, encodeZevaCanId, parse,
 } from './index'
 import { getFieldInfo } from './zeva'
 /* globals describe test expect */
 
-describe('getCanId', () => {
-  test('slice string', () => {
-    expect(getCanId('T1806E5F4803E8006400000000')).toEqual({
-      canId: 0x1806E5F4, // Charger limits.
-      prio: 6,
-      src: 244, // Battery Management System (BMS)
-      dst: 229, // Charger Control System (CCS)
-      pgn: 1536,
-    })
-    expect(getCanId('T1806E7F4803E8006400000000')).toEqual({
-      canId: 0x1806E7F4,
-      prio: 6,
-      src: 244,
-      dst: 231,
-      pgn: 1536,
-    })
-    expect(getCanId('T1806E8F4803E8006400000000')).toEqual({
-      canId: 0x1806E8F4,
-      prio: 6,
-      src: 244,
-      dst: 232,
-      pgn: 1536,
-    })
-  })
-})
-
 describe('parse', () => {
+  const parseLawicel = _.flow(
+    (x) => parseString(x, 'lawicel'),
+    parse,
+  )
+
+  test('lawicel', () => {
+    const input = 'T0000014180D330D2F0D300D33\r'
+    const result = parseLawicel(input, 'lawicel')
+    expect(result).toEqual(expect.objectContaining({
+      format: 'lawicel',
+      len: 8,
+      prefix: 'T',
+      input: 'T0000014180D330D2F0D300D33',
+      canId: 321,
+      moduleId: 2,
+      packetId: 1,
+    }))
+    expect(result.info.id).toBe('replyData1')
+  })
   test('broken', () => {
-    const vals = parse('T1806E5F4803E8006400000000')
+    const vals = parseLawicel('T1806E5F4803E8006400000000')
     expect(vals).toEqual(expect.objectContaining({
       canId: 403105268,
       input: 'T1806E5F4803E8006400000000',

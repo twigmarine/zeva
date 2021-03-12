@@ -5,7 +5,7 @@
   "author": "Kai Curry <kai@twigmarine.com>",
   "license": "MIT",
   "scripts": {
-    "compile": "babel src --out-dir lib",
+    "compile": "babel src --out-dir lib --ignore '**/*.test.js'",
     "prepublish": "npm run compile",
     "test": "jest --watch"
   },

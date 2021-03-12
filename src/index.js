@@ -16,7 +16,12 @@ export function parseZevaCanId(canId) {
     const packetId = canId - (bpid * 10)
     return { canId, moduleId, packetId }
   }
-  return parseCanId(canId)
+  return null
+}
+function addZevaCanIdInfo(input) {
+  const zevaInfo = parseZevaCanId(input.canId)
+  if (!zevaInfo) return input
+  return { ...input, ...zevaInfo }
 }
 
 export function encodeZevaCanId(info, moduleId = 0) {
@@ -33,25 +38,19 @@ export function encodeZevaCanId(info, moduleId = 0) {
     }
   }
   console.error('UNEXPECTED encodeZevaCanId')
-  return info
+  return null
 }
 
-export const getCanId = _.flow(
-  (x) => x.slice(1, 9),
-  (x) => parseInt(x, 16),
-  parseZevaCanId,
-)
-
-export function parseStr(input) {
-  return {
-    prefix: input[0],
-    format: 'lawicel',
-    input,
-    byteLength: getBytesLength(input),
-    ...getCanId(input),
-    data: getData(input),
-  }
-}
+// export function parseStr(input) {
+//   return {
+//     prefix: input[0],
+//     format: 'lawicel',
+//     input,
+//     byteLength: getBytesLength(input),
+//     ...getCanId(input),
+//     data: getData(input),
+//   }
+// }
 
 function finishEncode(info, input, data) {
   const canIdInfo = encodeZevaCanId(info, input.moduleId)
@@ -69,11 +68,9 @@ export const parseZeva = _.flow(
   addFields,
 )
 export const parse = _.flow(
-  _.toString,
-  parseStr,
+  addZevaCanIdInfo,
   setField('info', getFieldInfo),
   (x) => ((x.info && x.info.fields) ? parseZeva(x) : x),
-
   // addFields,
 )
 export {
