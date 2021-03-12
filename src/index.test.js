@@ -1,3 +1,4 @@
+import { encodePgn } from 'nori-can'
 import {
   encodeZeva, encodeZevaCanId, getCanId, parse,
 } from './index'
@@ -53,7 +54,7 @@ describe('encodeZeva', () => {
     expect(outputInfo).toEqual({
       ...input,
       canId: 300,
-      canIdHex: '0000012C',
+      // canIdHex: '0000012C',
       packetId: 0,
       bpid: 0,
       info: {
@@ -80,10 +81,11 @@ describe('encodeZeva', () => {
         ],
       },
       data: Uint8Array.from([14, 16]),
-      output: 'T0000012C20E10',
+      // output: 'T0000012C20E10',
     })
     expect(outputInfo.data[0]).toBe(volts >> 8) // eslint-disable-line no-bitwise
     expect(outputInfo.data[1]).toBe(volts & 0xFF) // eslint-disable-line no-bitwise
+    expect(encodePgn('lawicel', outputInfo)).toBe('T0000012C20E10')
   })
 })
 
@@ -95,7 +97,7 @@ describe('encodeZevaCanId', () => {
     expect(result).toEqual({
       bpid: 0,
       canId: 300,
-      canIdHex: '0000012C',
+      // canIdHex: '0000012C',
       moduleId: 0,
       packetId: 0,
     })
@@ -104,7 +106,7 @@ describe('encodeZevaCanId', () => {
     expect(encodeZevaCanId(info, 0).canId).toBe(300)
     const result = encodeZevaCanId(info, 1)
     expect(result.canId).toBe(310)
-    expect(result.canIdHex.length).toBe(8)
+    // expect(result.canIdHex.length).toBe(8)
     expect(encodeZevaCanId(info, 2).canId).toBe(320)
   })
 })

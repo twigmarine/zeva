@@ -2,12 +2,15 @@
   "name": "zeva",
   "version": "1.0.0",
   "main": "lib/index.js",
-  "author": "Kai Curry <kai@cape.io>",
+  "author": "Kai Curry <kai@twigmarine.com>",
   "license": "MIT",
   "scripts": {
     "compile": "babel src --out-dir lib",
     "prepublish": "npm run compile",
     "test": "jest --watch"
+  },
+  "jest": {
+    "modulePathIgnorePatterns": ["lib"]
   },
   "dependencies": {
     "lodash": "^4.17.20",

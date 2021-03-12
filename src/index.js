@@ -1,7 +1,7 @@
 import _ from 'lodash/fp'
 import { setField } from 'prairie'
 import {
-  addFields, buildEncode, byteString, canIdString, createData, getFieldsData, hexToBuff, parseCanId,
+  addFields, buildEncode, getFieldsData, hexToBuff, parseCanId,
 } from 'nori-can'
 import { getFieldInfo } from './zeva'
 
@@ -9,7 +9,7 @@ const getBytesLength = _.flow(_.nth(9), Number)
 const dataSlice = (x) => x.slice(10)
 const getData = _.flow(dataSlice, hexToBuff)
 
-function parseZevaCanId(canId) {
+export function parseZevaCanId(canId) {
   if (_.inRange(300, 460, canId)) {
     const bpid = Math.floor(canId / 10)
     const moduleId = bpid - 30
@@ -27,7 +27,6 @@ export function encodeZevaCanId(info, moduleId = 0) {
     const canId = 300 + packetId + bpid
     return {
       canId,
-      canIdHex: canIdString(canId),
       moduleId,
       packetId,
       bpid,
@@ -53,15 +52,6 @@ export function parseStr(input) {
     data: getData(input),
   }
 }
-export function encodeStr(byteLength, canIdHex, data) {
-  return `T${canIdHex}${byteLength}${byteString(data, '')}`
-}
-
-export const encode2 = _.flow(
-  encodeZevaCanId,
-  createData,
-  setField('output', encodeStr),
-)
 
 function finishEncode(info, input, data) {
   const canIdInfo = encodeZevaCanId(info, input.moduleId)
@@ -70,7 +60,6 @@ function finishEncode(info, input, data) {
     ...canIdInfo,
     info,
     data,
-    output: encodeStr(info.byteLength, canIdInfo.canIdHex, data),
   }
 }
 export const encodeZeva = buildEncode(finishEncode, getFieldInfo)
@@ -87,3 +76,6 @@ export const parse = _.flow(
 
   // addFields,
 )
+export {
+  getFieldInfo,
+}

@@ -413,7 +413,7 @@ export const getById = _.flow(
 export function getFieldInfo({ canId, id, packetId }) {
   if (_.isString(id)) {
     const info = getById(id)
-    if (!_.isEmpty(info)) return info
+    if (info) return info
   }
   // console.log(canId, packetId)
   if (_.isNumber(packetId)) return dataPacketMap.get(packetId)
@@ -421,6 +421,6 @@ export function getFieldInfo({ canId, id, packetId }) {
     const info = messagesMap.get(canId)
     if (!_.isEmpty(info)) return info
   }
-  // console.log(canId)
+  console.log('getFieldInfo NOT FOUND', canId, id, packetId)
   return null
 }
